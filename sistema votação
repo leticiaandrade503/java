@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+   import java.util.Scanner;
+
+                public class SistemaVotacaoSimples {
+                    public static void main(String[] args) {
+                        Scanner scanner = new Scanner(System.in);
+
+                        int votosSim = 0;
+                        int votosNao = 0;
+                        int totalVotos = 0;
+                        String opcao;
+
+                        System.out.println("=== SISTEMA DE VOTAÇÃO ===");
+                        System.out.println("Digite: S = Sim | N = Não | 0 = Encerrar\n");
+
+                        while (true) {
+
+                             public static void main(String[] args) {
+                                 int opcao;
+                                 do {
+                                     System.out.println("\n===== SISTEMA DE VOTAÇÃO =====");
+                                     System.out.println("1 - Cadastrar candidatos");
+                                     System.out.println("2 - Iniciar votação");
+                                     System.out.println("3 - Ver resultado");
+                                     System.out.println("4 - Ver matriz de votos");
+                                     System.out.println("5 - Sair");
+                                     System.out.print("Escolha: ");
+                                     opcao = lerNumero("");
+
+                                     switch (opcao) {
+                                         case 1: cadastrar(); break;
+                                         case 2: votar(); break;
+                                         case 3: mostrarResultado(); break;
+                                         case 4: mostrarMatriz(); break;
+                                         case 5: System.out.println("Saindo..."); break;
+                                         default: System.out.println("Opção inválida!");
+                                     }
+                                 } while (opcao != 5);
+                                 entrada.close();
+                             }
+
+
+                             static int lerNumero(String mensagem) {
+                                 while (true) {
+                                     if (!mensagem.isEmpty()) System.out.print(mensagem);
+                                     if (entrada.hasNextInt()) {
+                                         int valor = entrada.nextInt();
+                                         entrada.nextLine();
+                                         return valor;
+                                     }
+                                     System.out.println("Digite um número válido!");
+                                     entrada.nextLine();
+                                 }
+                             }
+
+
+                             static void cadastrar() {
+                                 if (totalCadastrados > 0) {
+                                     System.out.println("Já cadastrou!");
+                                     return;
+                                 }
+
+                                 int qtd;
+                                 do {
+                                     qtd = lerNumero("Quantos candidatos (1 a 5)? ");
+                                 } while (qtd < 1 || qtd > 5);
+
+                                 for (int i = 0; i < qtd; i++) {
+                                     int num;
+                                     while (true) {
+                                         num = lerNumero("\nNúmero do candidato " + (i+1) + ": ");
+                                         if (num <= 0) {
+                                             System.out.println("Número deve ser maior que zero!");
+                                             continue;
+                                         }
+                                         boolean existe = false;
+                                         for (int j = 0; j < i; j++) {
+                                             if (numeros[j] == num) { existe = true; break; }
+                                         }
+                                         if (existe) {
+                                             System.out.println("Esse número já existe!");
+                                             continue;
+                                         }
+                                         break;
+                                     }
+
+                                     String nome;
+                                     do {
+                                         System.out.print("Nome: ");
+                                         nome = entrada.nextLine().trim();
+                                         if (nome.isEmpty()) System.out.println("Nome não pode ficar vazio!");
+                                     } while (nome.isEmpty());
+
+                                     numeros[i] = num;
+                                     nomes[i] = nome;
+                                     votos[i] = 0;
+                                     totalCadastrados++;
+                                 }
+                                 System.out.println("Cadastro concluído!");
+                             }
+
+
+                             static int buscarPorNumero(int num) {
+                                 for (int i = 0; i < totalCadastrados; i++) {
+                                     if (numeros[i] == num) return i;
+                                 }
+                                 return -1;
+                             }
+
+
+                             static void listarCandidatos() {
+                                 System.out.println("\nCandidatos:");
+                                 for (int i = 0; i < totalCadastrados; i++) {
+                                     System.out.println(numeros[i] + " - " + nomes[i]);
+                                 }
+                             }
+
+
+                             static void votar() {
+                                 if (totalCadastrados == 0) {
+                                     System.out.println("Cadastre antes!");
+                                     return;
+                                 }
+
+                                 int turma;
+                                 do {
+                                     turma = lerNumero("Turma (1 a 3): ");
+                                 } while (turma < 1 || turma > 3);
+                                 int t = turma - 1;
+
+                                 if (qtdVotosTurma[t] >= MAX_VOTOS_TURMA) {
+                                     System.out.println("Turma já está cheia!");
+                                     return;
+                                 }
+
+                                 listarCandidatos();
+                                 System.out.println("Digite 0 para encerrar.");
+
+                                 while (qtdVotosTurma[t] < MAX_VOTOS_TURMA) {
+                                     int num = lerNumero("\nNúmero do voto: ");
+                                     if (num == 0) {
+                                         System.out.println("Votação encerrada.");
+                                         break;
+                                     }
+
+                                     int indice = buscarPorNumero(num);
+                                     if (indice == -1) {
+                                         System.out.println("Candidato não existe!");
+                                         continue;
+                                     }
+
+                                     matrizVotos[t][qtdVotosTurma[t]] = num;
+                                     qtdVotosTurma[t]++;
+                                     votos[indice]++;
+                                     System.out.println("Voto registrado!");
+                                 }
+                             }
+
+
+                             static void mostrarMatriz() {
+                                 System.out.println("\n===== MATRIZ DE VOTOS =====");
+                                 for (int t = 0; t < TOTAL_TURMAS; t++) {
+                                     System.out.print("Turma " + (t+1) + ": ");
+                                     for (int v = 0; v < MAX_VOTOS_TURMA; v++) {
+                                         if (v < qtdVotosTurma[t]) System.out.print(matrizVotos[t][v] + " ");
+                                         else System.out.print("- ");
+                                     }
+                                     System.out.println();
+                                 }
+                             }
+
+
+                             static void mostrarResultado() {
+                                 int total = 0;
+                                 for (int i = 0; i < totalCadastrados; i++) total += votos[i];
+                                 if (total == 0) {
+                                     System.out.println("Nenhum voto ainda.");
+                                     return;
+                                 }
+
+                                 System.out.println("\n===== RESULTADO =====");
+                                 int maior = votos[0];
+                                 for (int i = 1; i < totalCadastrados; i++) {
+                                     if (votos[i] > maior) maior = votos[i];
+                                 }
+
+                                 for (int i = 0; i < totalCadastrados; i++) {
+                                     double porc = (votos[i] * 100.0) / total;
+                                     System.out.printf("%s: %d votos (%.2f%%)%n", nomes[i], votos[i], porc);
+                                 }
+
+                                 int qtdVencedores = 0;
+                                 for (int i = 0; i < totalCadastrados; i++) {
+                                     if (votos[i] == maior) qtdVencedores++;
+                                 }
+
+                                 if (qtdVencedores == 1) System.out.print("\nVencedor: ");
+                                 else System.out.print("\nEmpate entre: ");
+
+                                 boolean primeiro = true;
+                                 for (int i = 0; i < totalCadastrados; i++) {
+                                     if (votos[i] == maior) {
+                                         if (!primeiro) System.out.print(", ");
+                                         System.out.print(nomes[i]);
+                                         primeiro = false;
+                                     }
+                                 }
+                                 System.out.println();
+                             }
+                         }
+
+
